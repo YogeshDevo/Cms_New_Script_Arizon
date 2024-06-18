@@ -1,69 +1,72 @@
 name: CMS
-trigger:
-  branches:
-    include:
+on:
+  push:
+    branches:
       - main
-pool:
-  vmImage: windows-latest
-variables:
-  nodeVersion: 14.x
-  artifactName: production-files
+
 jobs:
-  - job: Build_Deploy
-    displayName: Build and Deploy
+  build_deploy:
+    runs-on: windows-latest
+    env:
+      nodeVersion: 14.x
+      artifactName: production-files
     steps:
-      - task: UseNode@1
-        inputs:
-          versionSpec: $(nodeVersion)
-        displayName: Install Node.js
-      - script: |
-          npm install -g windows-build-tools
-        displayName: Install Build Tools for Node.js
-      - script: |
-          npm install pm2 -g
-        displayName: Install PM2
-      - checkout: self
-        displayName: Checkout source code
-      - task: DownloadBuildArtifacts@0
-        inputs:
-          artifactName: $(artifactName)
-          downloadPath: $(Build.ArtifactStagingDirectory)
-        displayName: Download Production Files
-      - script: |
-          cd $(Build.ArtifactStagingDirectory)/gil_cms_prod
+      - name: Checkout source code
+        uses: actions/checkout@v2
+
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.nodeVersion }}
+
+      - name: Install Build Tools for Node.js
+        run: npm install -g windows-build-tools
+
+      - name: Install PM2
+        run: npm install pm2 -g
+
+      - name: Download Production Files
+        uses: actions/download-artifact@v3
+        with:
+          name: ${{ env.artifactName }}
+          path: ${{ github.workspace }}
+
+      - name: Setup and Migrate Database
+        run: |
+          cd ${{ github.workspace }}/gil_cms_prod
           npm install
           npx prisma db push
-        displayName: Setup and Migrate Database
-      - script: |
-          cd $(Build.ArtifactStagingDirectory)/gil_cms_prod
+
+      - name: Seed Database
+        run: |
+          cd ${{ github.workspace }}/gil_cms_prod
           set SEED=Y
           set SEED_BLOCK=Y
           node src/index.js
           set SEED=N
           set SEED_BLOCK=N
-        displayName: Seed Database
-      - script: |
-          cd $(Build.ArtifactStagingDirectory)/gil_cms_prod
+
+      - name: Start Backend with PM2
+        run: |
+          cd ${{ github.workspace }}/gil_cms_prod
           pm2 start src/index.js --name "cms-backend"
-        displayName: Start Backend with PM2
-      - script: |
-          cd $(Build.ArtifactStagingDirectory)/gil_cms_https_proxy
+
+      - name: Start Proxy with PM2
+        run: |
+          cd ${{ github.workspace }}/gil_cms_https_proxy
           pm2 start server.js --name "cms-proxy"
-        displayName: Start Proxy with PM2
-      - script: |
-          pm2 monit
-        displayName: Monitor Applications with PM2
-      - script: |
-          echo "Regularly backup your database and important configuration
-          files"
-        displayName: Backup
-      - script: |
-          echo "Regularly update your application dependencies and Windows
-          Server for security patches"
-        displayName: Update Dependencies
-      - script: |
-          echo "Post-deployment maintenance tasks"
-        displayName: Post-Deployment Tasks
-      - script: |
-          echo "Final cleanup or notification tasks"
-        displayName: Final Tasks
+
+      - name: Monitor Applications with PM2
+        run: pm2 monit
+
+      - name: Backup
+        run: echo "Regularly backup your database and important configuration files"
+
+      - name: Update Dependencies
+        run: echo "Regularly update your application dependencies and Windows Server for security patches"
+
+      - name: Post-Deployment Tasks
+        run: echo "Post-deployment maintenance tasks"
+
+      - name: Final Tasks
+        run: echo "Final cleanup or notification tasks"
