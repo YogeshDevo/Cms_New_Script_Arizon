@@ -25,11 +25,23 @@ jobs:
       - name: Install PM2
         run: npm install pm2 -g
 
-      - name: Download production files
-        uses: actions/download-artifact@v3
-        with:
-          name: production-files
-          path: D:\a\Cms_New_Script_Arizon\Cms_New_Script_Arizon
+    #  - name: Download production files
+    #   uses: actions/download-artifact@v3
+    #    with:
+    #      name: production-files
+     #     path: D:\a\Cms_New_Script_Arizon\Cms_New_Script_Arizon
+     
+      - name: Download Production Files
+        run: |
+          curl -L -o gil_cms_prod.zip "https://drive.google.com/uc?export=download&id=14pitMRkVMLIxxSlTF-49AFg6haqGamCa"
+          curl -L -o gil_cms_https_proxy.zip "https://drive.google.com/uc?export=download&id=14pitMRkVMLIxxSlTF-49AFg6haqGamCa"
+          tar -xf gil_cms_prod.zip
+          tar -xf gil_cms_https_proxy.zip
+
+      - name: Extract Production Files
+        run: |
+          Expand-Archive -Path gil_cms_prod.zip -DestinationPath ./gil_cms_prod
+          Expand-Archive -Path gil_cms_https_proxy.zip -DestinationPath ./gil_cms_https_proxy
         
       - name: Setup and Migrate Database
         run: |
