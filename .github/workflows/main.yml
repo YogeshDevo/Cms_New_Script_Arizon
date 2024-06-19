@@ -31,11 +31,19 @@ jobs:
     #      name: production-files
      #     path: D:\a\Cms_New_Script_Arizon\Cms_New_Script_Arizon
     
-      - name: Download Production Files
-        run: |
-          Invoke-WebRequest -Uri "https://drive.google.com/uc?export=download&id=14pitMRkVMLIxxSlTF-49AFg6haqGamCa" -OutFile gil_cms_prod.zip
-          Invoke-WebRequest -Uri "https://drive.google.com/uc?export=download&id=14pitMRkVMLIxxSlTF-49AFg6haqGamCa" -OutFile gil_cms_https_proxy.zip
+#      - name: Download Production Files
+ #       run: |
+  #        Invoke-WebRequest -Uri "https://drive.google.com/uc?export=download&id=14pitMRkVMLIxxSlTF-49AFg6haqGamCa" -OutFile gil_cms_prod.zip
+   #       Invoke-WebRequest -Uri "https://drive.google.com/uc?export=download&id=14pitMRkVMLIxxSlTF-49AFg6haqGamCa" -OutFile gil_cms_https_proxy.zip
 
+      - name: Download and Extract Production Files
+        run: |
+          mkdir $env:USERPROFILE\Downloads\cms_production
+          cd $env:USERPROFILE\Downloads\cms_production
+          curl -L -o gil_cms_prod.zip "https://drive.google.com/uc?export=download&id=14pitMRkVMLIxxSlTF-49AFg6haqGamCa"
+          Expand-Archive -Path gil_cms_prod.zip -DestinationPath $env:USERPROFILE\Downloads\cms_production
+
+     
       - name: Set up Environment Variables
         run: |
           echo DATABASE_URL='sqlserver://localhost:1433;database=<dbname>;integratedSecurity=false;username=<dbusername>;password=<dbpassword>;trustServerCertificate=true;' >> $GITHUB_ENV
