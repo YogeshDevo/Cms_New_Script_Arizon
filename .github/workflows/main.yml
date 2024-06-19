@@ -19,18 +19,18 @@ jobs:
         with:
           node-version: ${{ env.nodeVersion }}
 
-  #   - name: Install Build Tools for Node.js
-     #  run: npm install -g windows-build-tools
+      - name: Install Build Tools for Node.js
+        run: npm install -g windows-build-tools
 
       - name: Install PM2
         run: npm install pm2 -g
 
-      - name: Download Production Files
+      - name: Download production files
         uses: actions/download-artifact@v3
         with:
-          name: ${{ env.artifactName }}
-          path: ${{ github.workspace }}
-
+          name: production-files
+          path: D:\a\Cms_New_Script_Arizon\Cms_New_Script_Arizon
+        
       - name: Setup and Migrate Database
         run: |
           cd ${{ github.workspace }}/gil_cms_prod
