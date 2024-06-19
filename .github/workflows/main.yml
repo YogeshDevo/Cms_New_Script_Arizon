@@ -19,8 +19,8 @@ jobs:
         with:
           node-version: ${{ env.nodeVersion }}
 
-      - name: Install Build Tools for Node.js
-        run: npm install -g windows-build-tools
+  #    - name: Install Build Tools for Node.js
+   #      run: npm install -g windows-build-tools
 
       - name: Install PM2
         run: npm install pm2 -g
