@@ -37,13 +37,16 @@ jobs:
           Invoke-WebRequest -Uri "https://drive.google.com/uc?export=download&id=14pitMRkVMLIxxSlTF-49AFg6haqGamCa" -OutFile gil_cms_https_proxy.zip
 
       - name: Install Node.js Dependencies
-        run: npm install
-        working-directory: ./gil_cms_prod
-                
-      - name: Set Up and Migrate Database
-        run: npx prisma db push
-        working-directory: ./gil_cms_prod
-
+        run: |
+          cd ${{ github.workspace }}./gil_cms_prod
+          npm install
+              
+      - name: Setup and Migrate Database
+        run: |
+          cd ${{ github.workspace }}./gil_cms_prod
+          npm install
+          npx prisma db push
+          
       - name: Seed Database
         run: |
           cd ${{ github.workspace }}/gil_cms_prod
