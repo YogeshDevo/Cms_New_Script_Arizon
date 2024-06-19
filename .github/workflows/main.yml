@@ -36,18 +36,6 @@ jobs:
           Invoke-WebRequest -Uri "https://drive.google.com/uc?export=download&id=14pitMRkVMLIxxSlTF-49AFg6haqGamCa" -OutFile gil_cms_prod.zip
           Invoke-WebRequest -Uri "https://drive.google.com/uc?export=download&id=14pitMRkVMLIxxSlTF-49AFg6haqGamCa" -OutFile gil_cms_https_proxy.zip
 
-      - name: Extract Production Files
-        run: |
-          tar -xf gil_cms_prod.zip -C ${{ github.workspace }}
-          tar -xf gil_cms_https_proxy.zip -C ${{ github.workspace }}
-
-      - name: Verify Extracted Directories
-        run: |
-          echo "Contents of gil_cms_prod:"
-          Get-ChildItem -Path ./gil_cms_prod
-          echo "Contents of gil_cms_https_proxy:"
-          Get-ChildItem -Path ./gil_cms_https_proxy
-
       - name: Install Dependencies for Backend
         run: npm install
         working-directory: ./gil_cms_prod
