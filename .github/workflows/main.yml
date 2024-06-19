@@ -56,7 +56,9 @@ jobs:
           echo SEED_BLOCK=Y >> $GITHUB_ENV
 
       - name: Set Up and Migrate Database
-        run: npx prisma db push
+        run: |
+           npm install
+           npx prisma db push  
         working-directory: ./gil_cms_prod             
      
       - name: Seed Database
