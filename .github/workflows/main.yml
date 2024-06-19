@@ -55,9 +55,10 @@ jobs:
           echo SEED=Y >> $GITHUB_ENV
           echo SEED_BLOCK=Y >> $GITHUB_ENV
 
-      - name: Set Up and Migrate Database
-        run: npx prisma db push
-        working-directory: ${{ github.workspace }}/gil_cms_prod          
+      - name: Set up and Migrate Database
+        run: |
+          cd $env:USERPROFILE\Downloads\cms_production\gil_cms_prod
+          npx prisma db push       
      
       - name: Seed Database
         run: |
