@@ -36,10 +36,6 @@ jobs:
           Invoke-WebRequest -Uri "https://drive.google.com/uc?export=download&id=14pitMRkVMLIxxSlTF-49AFg6haqGamCa" -OutFile gil_cms_prod.zip
           Invoke-WebRequest -Uri "https://drive.google.com/uc?export=download&id=14pitMRkVMLIxxSlTF-49AFg6haqGamCa" -OutFile gil_cms_https_proxy.zip
 
-      - name: Install Dependencies for Backend
-        run: npm install
-        working-directory: ./gil_cms_prod
-
       - name: Set up Environment Variables
         run: |
           echo DATABASE_URL='sqlserver://localhost:1433;database=<dbname>;integratedSecurity=false;username=<dbusername>;password=<dbpassword>;trustServerCertificate=true;' >> $GITHUB_ENV
