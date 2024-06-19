@@ -35,43 +35,7 @@ jobs:
         run: |
           Invoke-WebRequest -Uri "https://drive.google.com/uc?export=download&id=14pitMRkVMLIxxSlTF-49AFg6haqGamCa" -OutFile gil_cms_prod.zip
           Invoke-WebRequest -Uri "https://drive.google.com/uc?export=download&id=14pitMRkVMLIxxSlTF-49AFg6haqGamCa" -OutFile gil_cms_https_proxy.zip
-
-      - name: Extract Production Files
-        run: |
-          Expand-Archive -Path gil_cms_prod.zip -DestinationPath ./gil_cms_prod
-          Expand-Archive -Path gil_cms_https_proxy.zip -DestinationPath ./gil_cms_https_proxy
-
-      - name: Upload Production Artifacts
-        uses: actions/upload-artifact@v2
-        with:
-          name: gil_cms_prod
-          path: ./gil_cms_prod
-
-      - name: Upload Proxy Artifacts
-        uses: actions/upload-artifact@v2
-        with:
-          name: gil_cms_https_proxy
-          path: ./gil_cms_https_proxy
-
-      - name: Set up environment variables
-        run: |
-          echo DATABASE_URL='sqlserver://localhost:1433;database=<dbname>;integratedSecurity=false;username=<dbusername>;password=<dbpassword>;trustServerCertificate=true;' >> $GITHUB_ENV
-          echo AUTH_TYPE=ldap >> $GITHUB_ENV
-          echo PORT=80 >> $GITHUB_ENV
-          echo SQLSERVER_HOST=localhost >> $GITHUB_ENV
-          echo SQLSERVER_USER=cmsadmin2 >> $GITHUB_ENV
-          echo SQLSERVER_PASSWORD=cmsadmin2 >> $GITHUB_ENV
-          echo SQLSERVER_DB_NAME=gil_cms2 >> $GITHUB_ENV
-          echo SQLSERVER_DB_BACKUP_PATH=C:/sqlserver_Backup >> $GITHUB_ENV
-          echo JWT_SECRET=Arizon123 >> $GITHUB_ENV
-          echo SUPER_ADMIN_USERNAME=super-admin >> $GITHUB_ENV
-          echo SUPER_ADMIN_PASSWORD=Arizon@123 >> $GITHUB_ENV
-          echo PRISMA_OPTIMIZE=N >> $GITHUB_ENV
-          echo PRISMA_LOGGING=Y >> $GITHUB_ENV
-          echo NODE_ENV=production >> $GITHUB_ENV
-          echo SEED=Y >> $GITHUB_ENV
-          echo SEED_BLOCK=Y >> $GITHUB_ENV
-          
+                
       - name: Setup and Migrate Database
         run: |
           cd ${{ github.workspace }}/gil_cms_prod
